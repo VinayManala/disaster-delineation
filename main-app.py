@@ -56,21 +56,13 @@ dn.drop(columns=['events.categories.title'],inplace=True)
 st.write('The bar chart shows the no of occuring disaster events around the world.')
 st.bar_chart(dn)
 
-COLOR_BREWER_BLUE_SCALE = [                                                     
-      [240, 249, 232],                                                            
-      [204, 235, 197],                                                            
-      [168, 221, 181],                                                            
-      [123, 204, 196],                                                            
-      [67, 162, 202],                                                             
-      [8, 104, 172],                                                              
-]     
 
-
-disaster_event_selected = [e for e in event['events.categories.title'] 
+try:
+ disaster_event_selected = [e for e in event['events.categories.title'] 
         if st.sidebar.checkbox(e,True)]
 
 #Plotting the Quick maps
-if disaster_event_selected:
+ if disaster_event_selected:
     for i in range(len(disaster_event_selected)):
         st.header(disaster_event_selected[i])
         event = data['events.title'].groupby(data['events.categories.title']==disaster_event_selected[i])
@@ -110,7 +102,12 @@ if disaster_event_selected:
                  )   
             r
 
-else:
-    st.error("Please choose at least one layer above..")
-#with row1:
-#    r
+    else:
+        st.error("Please choose at least one layer above..")
+
+except urllib.error.URLError as e:
+    st.error("""
+        **This demo requires internet access.**
+
+        Connection error: %s
+    """ % e.reason)
